@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MenuActivity extends AppCompatActivity {
+    String user_index, username;
     TextView name, user_money, user_gain;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -16,12 +17,14 @@ public class MenuActivity extends AppCompatActivity {
         user_money = findViewById(R.id.money_txt);
         user_gain = findViewById(R.id.gain_txt);
 
-        bringInfo();
+        Intent intent = getIntent();
+        user_index = intent.getStringExtra("user_index");
+        username = intent.getStringExtra("username");
+        bringInfo(user_index);
     }
 
-    public void bringInfo(){ //유저의 이름, 돈, 게인을 가져와 보임
-        //todo: user_index를 통해 서버에서 name, money, gain을 가져옴
-        name.setText("곽성은");
+    public void bringInfo(String id){ //유저의 이름, 돈, 게인을 가져와 보임
+        name.setText(username);
         user_money.setText("1,000,000");
         user_gain.setText("20");
     }
