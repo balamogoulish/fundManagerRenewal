@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(getApplicationContext(), "로그인에 성공했습니다! :)", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
-                            intent.putExtra("user_index", result.getUserIndex());
+                            intent.putExtra("user_index", result.getUserIndex()+"");
                             intent.putExtra("username", result.getUsername());
                             startActivity(intent);
                         }
@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<user_model> call, Throwable t){
                     Toast.makeText(getApplicationContext(), "api 응답 실패!!", Toast.LENGTH_SHORT).show();
+
                 }
             });
         } else{
