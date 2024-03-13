@@ -28,6 +28,14 @@ public class user_model {
     @Expose
     private String account;
 
+    public user_model(String name, String id, String pw, String email, String account){
+        this.username = name;
+        this.id = id;
+        this.password = pw;
+        this.email = email;
+        this.account = account;
+    }
+
 
     public long getUserIndex(){
         return user_index;
