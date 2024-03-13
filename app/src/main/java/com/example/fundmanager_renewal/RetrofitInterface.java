@@ -41,4 +41,6 @@ public interface RetrofitInterface {
     @FormUrlEncoded
     @POST("gain")
     Call<Void> postGain(@Field("user_index_g") String user_index_g, @Field("gain") String gain, @Field("principal") String principal);
+    @GET("gain/list/{user_index}")
+    Call<List<gain_model>> bringGainList(@Path("user_index") String user_index);
 }

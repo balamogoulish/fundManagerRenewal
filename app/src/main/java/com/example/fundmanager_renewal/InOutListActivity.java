@@ -20,11 +20,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class InOutListActivity extends AppCompatActivity {
-    private TableLayout tableLayout;
-    private TableRow tableRow;
     String user_index;
     Call<List<transaction_model>> call;
-    List<transaction_model> result;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +38,7 @@ public class InOutListActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<transaction_model>> call, Response<List<transaction_model>> response) {
                 if(response.isSuccessful()) {
-                    result = response.body();
+                    List<transaction_model> result = response.body();
                     List<transaction_model> transactions = new ArrayList<>();
                     for (transaction_model model : result) {
                         transaction_model tran = new transaction_model();
@@ -72,6 +69,7 @@ public class InOutListActivity extends AppCompatActivity {
             // Create a new row to be added to the tableLayout
             TableRow row = new TableRow(this);
             TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(0, 30, 0, 30);
             row.setLayoutParams(layoutParams);
 
             // Create TextViews to hold transaction data
