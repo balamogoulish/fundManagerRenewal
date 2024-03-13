@@ -1,5 +1,7 @@
 package com.example.fundmanager_renewal;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -28,6 +30,9 @@ public interface RetrofitInterface {
 
     @GET("transaction/{user_index}")
     Call<transaction_model> bringTran(@Path("user_index") String user_index);
+
+    @GET("transaction/list/{user_index}")
+    Call<List<transaction_model>> bringTranList(@Path("user_index") String user_index);
 
     @FormUrlEncoded
     @POST("transaction")

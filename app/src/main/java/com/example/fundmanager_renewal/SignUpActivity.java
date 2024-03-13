@@ -85,22 +85,27 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     public String checkSignUpValid(String name, String id, String pw, String pwRe, String email, String account){
+        /**TO DO:
+         * id 중복 확인
+         * email 인증 기능 추가
+         * **/
+
         String result = "SUCCESS";
         String pwPattern = "([0-9].*[!,@,#,^,*,(,)])|([!,@,#,^,*,(,)].*[0-9])";
         Pattern pattern_pw = Pattern.compile(pwPattern);
         Matcher matcher = pattern_pw.matcher(pw);
-        if(id.length() < 6 ||id.length() > 12){
+        if(name.length() < 2 ){
+            result = "이름을 두 자 이상입력해주세요.";
+        } else if(id.length() < 6 ||id.length() > 12){
             result = "6-12자리의 아이디를 입력해주세요.";
         } else if(!matcher.find()){
             result = "숫자, 특수문자가 포함된 0-9자를 비밀번호로 입력해주세요.";
-        } else if(name.length() < 2 ){
-            result = "이름을 두 자 이상입력해주세요.";
-        } else if(account.length() == 0){
-            result = "계좌번호를 입력해주세요.";
         } else if(pw.equals(pwRe) != true){
             result = "비밀번호가 일치하지 않습니다.";
         } else if(email.length() == 0){
             result = "이메일을 입력해주세요.";
+        } else if(account.length() == 0){
+            result = "계좌번호를 입력해주세요.";
         }
 
         return result;

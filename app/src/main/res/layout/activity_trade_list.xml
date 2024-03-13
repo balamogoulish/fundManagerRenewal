@@ -7,7 +7,7 @@
     android:background="#0CFDD835">
 
     <TableLayout
-        android:id="@+id/trader_table"
+        android:id="@+id/trade_table"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:padding="15dp"

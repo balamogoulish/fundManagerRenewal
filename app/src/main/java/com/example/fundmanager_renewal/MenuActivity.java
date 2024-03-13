@@ -28,14 +28,14 @@ public class MenuActivity extends AppCompatActivity {
         Intent intent = getIntent();
         user_index = intent.getStringExtra("user_index");
         username = intent.getStringExtra("username");
-        bringInfo();
+        name.setText(username);
     }
 
-    public void bringInfo(){ //유저의 이름, 돈, 게인을 가져와 보임
-        name.setText(username);
+    @Override
+    public void onResume(){
+        super.onResume();
         bringGain();
         bringTotalAmount();
-
     }
 
     public void bringGain(){
@@ -69,7 +69,7 @@ public class MenuActivity extends AppCompatActivity {
                 if(response.isSuccessful()){
                     transaction_model result = response.body();
                     if(result == null){
-                        Toast.makeText(getApplicationContext(), "사용자의 보유자금이 비어있습니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "사용자의 거래 내역이 비어있습니다.", Toast.LENGTH_SHORT).show();
                     } else{
                         user_money.setText(result.getTotal_amount()+"");
                     }
@@ -85,18 +85,22 @@ public class MenuActivity extends AppCompatActivity {
 
     public void goToIn(View target){
         Intent intent = new Intent(getApplicationContext(), InActivity.class);
+        intent.putExtra("user_index", user_index);
         startActivity(intent);
     }
     public void goToOut(View target){
         Intent intent = new Intent(getApplicationContext(), OutActivity.class);
+        intent.putExtra("user_index", user_index);
         startActivity(intent);
     }
     public void goToInOutList(View target){
         Intent intent = new Intent(getApplicationContext(), InOutListActivity.class);
+        intent.putExtra("user_index", user_index);
         startActivity(intent);
     }
     public void goToTradeList(View target){
         Intent intent = new Intent(getApplicationContext(), TradeListActivity.class);
+        intent.putExtra("user_index", user_index);
         startActivity(intent);
     }
     public void logout(View target){
