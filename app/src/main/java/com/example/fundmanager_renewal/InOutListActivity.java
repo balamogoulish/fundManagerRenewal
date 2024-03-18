@@ -74,23 +74,28 @@ public class InOutListActivity extends AppCompatActivity {
 
             // Create TextViews to hold transaction data
             TextView textViewTransactionTime = new TextView(this);
-            textViewTransactionTime.setText(transaction.getTransaction_time());
+            textViewTransactionTime.setText(((TradeListActivity)TradeListActivity.tContext).formatDate(transaction.getTransaction_time()));
             textViewTransactionTime.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+            textViewTransactionTime.setGravity(Gravity.CENTER);
+            textViewTransactionTime.setTextSize(18);
             row.addView(textViewTransactionTime);
 
             TextView textViewDeposit = new TextView(this);
             textViewDeposit.setText(String.valueOf(transaction.getDeposit()));
             textViewDeposit.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+            textViewDeposit.setTextSize(18);
             row.addView(textViewDeposit);
 
             TextView textViewWithdrawal = new TextView(this);
             textViewWithdrawal.setText(String.valueOf(transaction.getWithdrawal()));
             textViewWithdrawal.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+            textViewWithdrawal.setTextSize(18);
             row.addView(textViewWithdrawal);
 
             TextView textViewTotalAmount = new TextView(this);
             textViewTotalAmount.setText(String.valueOf(transaction.getTotal_amount()));
             textViewTotalAmount.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+            textViewTotalAmount.setTextSize(18);
             row.addView(textViewTotalAmount);
 
             // Add the row to the tableLayout

@@ -15,51 +15,31 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class InActivity extends AppCompatActivity{
+public class InActivity extends AppCompatActivity implements TotalAmountCallback, bringGainPrincipalCallback{
     TextView txt_total_amount;
     EditText edit_input;
     String user_index;
-    long total_amount;
-    Call<transaction_model> callTran;
+    long total_amount, principal, gain;
     Call<Void> call;
+    public static Context iContext;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in);
+        iContext = this;
+
         txt_total_amount = (TextView) findViewById(R.id.total_money_txt);
         edit_input = (EditText) findViewById(R.id.in_edit);
 
         Intent intent = getIntent();
         user_index = intent.getStringExtra("user_index");
 
-        bringTotalAmount();
-
-    }
-    public void bringTotalAmount(){
-        callTran = retrofit_client.getApiService().bringTran(user_index);
-        callTran.enqueue(new Callback<transaction_model>() {
-            @Override
-            public void onResponse(Call<transaction_model> callTran, Response<transaction_model> response) {
-                if(response.isSuccessful()){
-                    transaction_model result = response.body();
-                    if(result == null){
-                        Toast.makeText(getApplicationContext(), "사용자의 거래 내역이 비어있습니다.", Toast.LENGTH_SHORT).show();
-                    } else{
-                        total_amount = result.getTotal_amount();
-                        txt_total_amount.setText(total_amount+"");
-                    }
-                }
-            }
-            @Override
-            public void onFailure(Call<transaction_model> callTran, Throwable t) {
-                Toast.makeText(getApplicationContext(), "api 응답 실패!!", Toast.LENGTH_SHORT).show();
-                Log.d("<<API ERROR in Tran>>", t+"");
-            }
-        });
+        ((MenuActivity)MenuActivity.mContext).bringTotalAmount(this);
     }
 
     public void insertMoney(View target){
         String input = edit_input.getText().toString();
         long total = total_amount+Long.parseLong(input);
+        Log.d("TOTALAMOUNT", total_amount+"");
         call = retrofit_client.getApiService().postTran(user_index, input,"0", String.valueOf(total));
         call.enqueue(new Callback<Void>() {
             @Override
@@ -67,17 +47,56 @@ public class InActivity extends AppCompatActivity{
                 if(response.isSuccessful()){
                     Toast.makeText(getApplicationContext(),"입금에 성공했습니다!", Toast.LENGTH_SHORT).show();
                     edit_input.setText("");
-                    bringTotalAmount();
+                    txt_total_amount.setText(total+"");
+                    total_amount = total;
+                    ((MenuActivity)MenuActivity.mContext).bringGain(new bringGainPrincipalCallback() {
+                        @Override
+                        public void gainPrincipalReceived(gain_model gain_result){
+                            principal = gain_result.getPrincipal();
+                            gain = gain_result.getGain();
+                            Log.d("PRINCIPALinInsert" ,principal+"");
+                            updatePrincipal(gain, principal+Long.parseLong(input));
+                        }
+                    });
                 }
                 else{
                     Toast.makeText(getApplicationContext(),"입금에 실패했습니다..", Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 Toast.makeText(getApplicationContext(),"입금에 실패했습니다..", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+    @Override
+    public void onTotalAmountReceived(transaction_model tran_result) {
+        total_amount = tran_result.getTotal_amount();
+        txt_total_amount.setText(total_amount+"");
+    }
+    @Override
+    public void gainPrincipalReceived(gain_model gain_result) {
+        Toast.makeText(getApplicationContext(),"이상한 거 불러옴..", Toast.LENGTH_SHORT).show();
+    }
+    public void updatePrincipal(long gain, long change){
+        call = retrofit_client.getApiService().putGain(user_index, gain+"", change+"");
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if(response.isSuccessful()){
+                    Log.d("PRINCIPAL", "원금에 반영되었습니다.");
+                } else{
+                    Log.d("NOTFAILBUT", "response");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.d("PRINCIPALFAIL", t+"");
+            }
+        });
+    }
+
+
 }

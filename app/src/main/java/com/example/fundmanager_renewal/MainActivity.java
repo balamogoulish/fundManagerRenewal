@@ -39,9 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
                         user_model result = response.body();
                         if(result == null){
-                            Toast.makeText(getApplicationContext(), "아이디 또는 비밀 번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
-                            edit_id.setText("");
-                            edit_pw.setText("");
+
                         } else {
                             Toast.makeText(getApplicationContext(), "로그인에 성공했습니다! :)", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
@@ -53,8 +51,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onFailure(Call<user_model> call, Throwable t){
-                    Toast.makeText(getApplicationContext(), "api 응답 실패!!", Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(getApplicationContext(), "아이디 또는 비밀 번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+                    edit_id.setText("");
+                    edit_pw.setText("");
                 }
             });
         } else{

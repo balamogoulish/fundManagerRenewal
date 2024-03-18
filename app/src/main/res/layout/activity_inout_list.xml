@@ -54,7 +54,7 @@
                 android:id="@+id/textView11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="원금 총액"
+                android:text="총금액"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />

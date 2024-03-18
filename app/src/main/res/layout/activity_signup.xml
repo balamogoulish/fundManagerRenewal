@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:backgroundTint="#FDD835"
-        android:onClick="signUp"
+        android:onClick="idDuplication"
         android:text="회원가입"
         android:textColor="#000000"
         android:textSize="24sp"

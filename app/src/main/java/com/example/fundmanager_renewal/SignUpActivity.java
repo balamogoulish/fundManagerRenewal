@@ -16,11 +16,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity{
     EditText edit_name, edit_id, edit_pw, edit_checkPw, edit_email, edit_account;
     Call<Void> call;
     Call<user_model> call_user;
-
     String user_index;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,15 +32,7 @@ public class SignUpActivity extends AppCompatActivity {
         edit_account =(EditText) findViewById(R.id.account_edit);
     }
 
-    public void signUp(View target){
-        String name = edit_name.getText().toString();
-        String id = edit_id.getText().toString();
-        String pw = edit_pw.getText().toString();
-        String pwRe = edit_checkPw.getText().toString();
-        String email = edit_email.getText().toString();
-        String account = edit_account.getText().toString();
-
-        String valid = checkSignUpValid(name, id, pw, pwRe, email, account);
+    public void signUp(String valid, String name, String id, String pw, String email, String account){
         if(valid.equals("SUCCESS")){
             call = retrofit_client.getApiService().signUp(name, id, pw, email, account);
             call.enqueue(new Callback<Void>() {
@@ -89,7 +80,6 @@ public class SignUpActivity extends AppCompatActivity {
          * id 중복 확인
          * email 인증 기능 추가
          * **/
-
         String result = "SUCCESS";
         String pwPattern = "([0-9].*[!,@,#,^,*,(,)])|([!,@,#,^,*,(,)].*[0-9])";
         Pattern pattern_pw = Pattern.compile(pwPattern);
@@ -109,6 +99,28 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         return result;
+    }
+    public void idDuplication(View target){
+        String name = edit_name.getText().toString();
+        String id = edit_id.getText().toString();
+        String pw = edit_pw.getText().toString();
+        String pwRe = edit_checkPw.getText().toString();
+        String email = edit_email.getText().toString();
+        String account = edit_account.getText().toString();
+
+        call_user = retrofit_client.getApiService().checkIdDuplicate(id);
+        call_user.enqueue(new Callback<user_model>() {
+            @Override
+            public void onResponse(Call<user_model> call, Response<user_model> response) {
+                user_model user =response.body();
+                Toast.makeText(getApplicationContext(), "중복된 아이디입니다.", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onFailure(Call<user_model> call, Throwable t) {
+                String valid = checkSignUpValid(name, id, pw, pwRe, email, account);
+                signUp(valid, name, id, pw, email, account);
+            }
+        });
     }
 
     public String initTransaction(){
@@ -145,4 +157,5 @@ public class SignUpActivity extends AppCompatActivity {
         });
         return initGain[0];
     }
+
 }

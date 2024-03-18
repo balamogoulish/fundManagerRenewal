@@ -18,6 +18,8 @@ public interface RetrofitInterface {
 
     @GET("user/{id}/{password}")
     Call<user_model> login(@Path("id") String id, @Path("password") String password);
+    @GET("user/id/{id}")
+    Call<user_model> checkIdDuplicate(@Path("id") String id);
 
     @DELETE("user/{user_index}")
     Call<Void> deleteAccount(@Path("user_index") String user_index);
@@ -41,6 +43,11 @@ public interface RetrofitInterface {
     @FormUrlEncoded
     @POST("gain")
     Call<Void> postGain(@Field("user_index_g") String user_index_g, @Field("gain") String gain, @Field("principal") String principal);
+
+    @FormUrlEncoded
+    @PUT("gain/{user_index_g}")
+    Call<Void> putGain(@Path("user_index_g") String user_index_g, @Field("gain") String gain, @Field("principal") String principal);
+
     @GET("gain/list/{user_index}")
     Call<List<gain_model>> bringGainList(@Path("user_index") String user_index);
 }
