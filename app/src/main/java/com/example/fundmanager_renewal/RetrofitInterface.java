@@ -21,11 +21,19 @@ public interface RetrofitInterface {
     @GET("user/id/{id}")
     Call<user_model> checkIdDuplicate(@Path("id") String id);
 
+    @GET("user/email/{email}")
+    Call<user_model> findUserId(@Path("email") String email);
+
     @DELETE("user/{user_index}")
     Call<Void> deleteAccount(@Path("user_index") String user_index);
+
     @FormUrlEncoded
     @POST("user")
     Call<Void> signUp(@Field("username") String username, @Field("id") String id, @Field("password") String password, @Field("email") String email, @Field("account") String account);
+
+    @FormUrlEncoded
+    @PUT("user/pw/{id}")
+    Call<Void> updatePw(@Path("id") String id, @Field("password") String password);
 
     @GET("gain/{user_index}")
     Call<gain_model> bringGain(@Path("user_index") String user_index);
@@ -50,4 +58,12 @@ public interface RetrofitInterface {
 
     @GET("gain/list/{user_index}")
     Call<List<gain_model>> bringGainList(@Path("user_index") String user_index);
+
+    @FormUrlEncoded
+    @POST("user/email")
+    Call<String> checkEmail(@Field("email") String email);
+
+    @FormUrlEncoded
+    @POST("user/newPw")
+    Call<String> sendNewPw(@Field("email") String email);
 }

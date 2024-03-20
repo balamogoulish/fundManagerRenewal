@@ -20,6 +20,9 @@
         <activity android:name=".OutActivity"/>
         <activity android:name=".InOutListActivity"/>
         <activity android:name=".TradeListActivity"/>
+        <activity android:name=".FindIdActivity"/>
+        <activity android:name=".FindPwActivity"/>
+        <activity android:name=".UpdatePwActivity"/>
 
         <activity
             android:name=".MainActivity"

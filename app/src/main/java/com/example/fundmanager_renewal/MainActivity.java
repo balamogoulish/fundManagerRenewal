@@ -65,4 +65,14 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
         startActivity(intent);
     }
+
+    public void goToFindId(View target){
+        Intent intent = new Intent(getApplicationContext(), FindIdActivity.class);
+        startActivity(intent);
+    }
+
+    public void goToFindPw(View target){
+        Intent intent = new Intent(getApplicationContext(), FindPwActivity.class);
+        startActivity(intent);
+    }
 }

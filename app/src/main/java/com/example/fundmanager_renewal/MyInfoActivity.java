@@ -18,6 +18,7 @@ import retrofit2.Response;
 public class MyInfoActivity extends AppCompatActivity {
     TextView name, email, account;
     String user_index;
+    private String id;
     Call<user_model> call;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,7 @@ public class MyInfoActivity extends AppCompatActivity {
                         name.setText(result.getUsername());
                         email.setText(result.getEmail());
                         account.setText(result.getAccount());
+                        id = result.getID();
                     } else{
                         Toast.makeText(getApplicationContext(), "정보를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
                     }
@@ -81,5 +83,15 @@ public class MyInfoActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "잠시 후 다시 시도해주세요 :(", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public String getUserId() {
+        return id;
+    }
+
+    public void updateMyPw(View target){
+        Intent intent = new Intent(getApplicationContext(), UpdatePwActivity.class);
+        intent.putExtra("id", getUserId());
+        startActivity(intent);
     }
 }
