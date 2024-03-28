@@ -12,7 +12,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -74,7 +77,7 @@ public class InOutListActivity extends AppCompatActivity {
 
             // Create TextViews to hold transaction data
             TextView textViewTransactionTime = new TextView(this);
-            textViewTransactionTime.setText(((TradeListActivity)TradeListActivity.tContext).formatDate(transaction.getTransaction_time()));
+            textViewTransactionTime.setText(formatDate(transaction.getTransaction_time()));
             textViewTransactionTime.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
             textViewTransactionTime.setGravity(Gravity.CENTER);
             textViewTransactionTime.setTextSize(18);
@@ -100,6 +103,18 @@ public class InOutListActivity extends AppCompatActivity {
 
             // Add the row to the tableLayout
             tableLayout.addView(row);
+        }
+    }
+    public String formatDate(String datetimeString) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        try {
+            Date date = inputFormat.parse(datetimeString);
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return ""; // Return empty string if parsing fails
         }
     }
 }

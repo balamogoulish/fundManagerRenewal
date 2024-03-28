@@ -13,6 +13,14 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface RetrofitInterface {
+    @FormUrlEncoded
+    @POST("plus")
+    Call<Void> plusLeast(@Field("change") String change);
+
+    @FormUrlEncoded
+    @POST("minus")
+    Call<Void> minusLeast(@Field("change") String change);
+
     @GET("user/{user_index}")
     Call<user_model> find_user_info(@Path("user_index") String user_index);
 

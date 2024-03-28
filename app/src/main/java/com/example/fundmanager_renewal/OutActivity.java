@@ -55,6 +55,7 @@ public class OutActivity extends AppCompatActivity implements TotalAmountCallbac
                                 principal = gain_result.getPrincipal();
                                 gain = gain_result.getGain();
                                 updatePrincipal(gain, principal-Long.parseLong(output));
+                                updateLeast(output);
                             }
                         });
                     }
@@ -96,6 +97,24 @@ public class OutActivity extends AppCompatActivity implements TotalAmountCallbac
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 Log.d("PRINCIPALFAIL", t+"");
+            }
+        });
+    }
+    public void updateLeast(String output){
+        call = retrofit_client.getApiService().minusLeast(output);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if(response.isSuccessful()){
+                    Log.d("LEAST", "least에 반영되었습니다.");
+                } else{
+                    Log.d("NOTFAILBUT", "response");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.d("LEASTFAIL", t+"");
             }
         });
     }

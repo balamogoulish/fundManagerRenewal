@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.w3c.dom.Text;
 
 import java.util.regex.Matcher;
@@ -59,14 +60,15 @@ public class SignUpActivity extends AppCompatActivity{
 
         String valid = checkSignUpValid(name, id, pw, pwRe, email, account);
         if(valid.equals("SUCCESS")){
-            call = retrofit_client.getApiService().signUp(name, id, pw, email, account);
+            String pwHashed = BCrypt.hashpw(pw, BCrypt.gensalt());
+            call = retrofit_client.getApiService().signUp(name, id, pwHashed, email, account);
             call.enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if(response.isSuccessful()){
                         Toast.makeText(getApplicationContext(), "성공적으로 가입되었습니다!! :)", Toast.LENGTH_SHORT).show();
 
-                        call_user = retrofit_client.getApiService().login(id,pw);
+                        call_user = retrofit_client.getApiService().checkIdDuplicate(id);
                         call_user.enqueue(new Callback<user_model>() {
                             @Override
                             public void onResponse(Call<user_model> call, Response<user_model> response) {

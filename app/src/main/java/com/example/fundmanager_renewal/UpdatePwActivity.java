@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,11 +45,11 @@ public class UpdatePwActivity  extends AppCompatActivity {
         if(!matcher.find()){
             Toast.makeText(getApplicationContext(), "숫자, 특수문자가 포함된 5-9자를 비밀번호로 입력해주세요.", Toast.LENGTH_SHORT).show();
         } else{
-            callUser = retrofit_client.getApiService().login(id, originPw);
+            callUser = retrofit_client.getApiService().checkIdDuplicate(id);
             callUser.enqueue(new Callback<user_model>() {
                 @Override
                 public void onResponse(Call<user_model> call, Response<user_model> response) {
-                    if(response.isSuccessful() && response != null){
+                    if(response.isSuccessful() && response != null && BCrypt.checkpw(originPw, response.body().getPassword())){
                         updatePw(newPw);
                     } else{
                         Toast.makeText(getApplicationContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
@@ -62,7 +64,7 @@ public class UpdatePwActivity  extends AppCompatActivity {
     }
 
     public void updatePw(String newPw){
-        call = retrofit_client.getApiService().updatePw(id, newPw);
+        call = retrofit_client.getApiService().updatePw(id, BCrypt.hashpw(newPw, BCrypt.gensalt()));
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

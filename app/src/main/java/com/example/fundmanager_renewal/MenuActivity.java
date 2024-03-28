@@ -118,6 +118,7 @@ public class MenuActivity extends AppCompatActivity implements TotalAmountCallba
     public void logout(View target){
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
+        finish();
     }
     public void goToMyInfo(View target){
         Intent intent = new Intent(getApplicationContext(), MyInfoActivity.class);

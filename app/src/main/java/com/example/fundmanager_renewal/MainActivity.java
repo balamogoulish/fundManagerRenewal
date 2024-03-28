@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import retrofit2.Call;
 
 import retrofit2.Callback;
@@ -23,13 +25,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         edit_id = findViewById(R.id.id_edit);
         edit_pw = findViewById(R.id.pw_edit);
+
     }
 
     public void login(View target){
         String id = edit_id.getText().toString();
         String pw = edit_pw.getText().toString();
 
-        call = retrofit_client.getApiService().login(id, pw);
+        call = retrofit_client.getApiService().checkIdDuplicate(id);
 
         if(id.length()>0 && pw.length()>0){
             call.enqueue(new Callback<user_model>(){
@@ -41,17 +44,21 @@ public class MainActivity extends AppCompatActivity {
                         if(result == null){
 
                         } else {
-                            Toast.makeText(getApplicationContext(), "로그인에 성공했습니다! :)", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
-                            intent.putExtra("user_index", result.getUserIndex()+"");
-                            intent.putExtra("username", result.getUsername());
-                            startActivity(intent);
+                            if(BCrypt.checkpw(pw, result.getPassword())){
+                                Toast.makeText(getApplicationContext(), "로그인에 성공했습니다! :)", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
+                                intent.putExtra("user_index", result.getUserIndex()+"");
+                                intent.putExtra("username", result.getUsername());
+                                startActivity(intent);
+                            }
+                            Toast.makeText(getApplicationContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+                            edit_pw.setText("");
                         }
                     }
                 }
                 @Override
                 public void onFailure(Call<user_model> call, Throwable t){
-                    Toast.makeText(getApplicationContext(), "아이디 또는 비밀 번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "아이디가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
                     edit_id.setText("");
                     edit_pw.setText("");
                 }
