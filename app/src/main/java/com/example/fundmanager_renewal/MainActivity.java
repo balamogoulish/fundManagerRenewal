@@ -51,8 +51,10 @@ public class MainActivity extends AppCompatActivity {
                                 intent.putExtra("username", result.getUsername());
                                 startActivity(intent);
                             }
-                            Toast.makeText(getApplicationContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
-                            edit_pw.setText("");
+                            else {
+                                Toast.makeText(getApplicationContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+                                edit_pw.setText("");
+                            }
                         }
                     }
                 }

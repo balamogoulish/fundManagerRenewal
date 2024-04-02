@@ -23,7 +23,7 @@ public class MyInfoActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_myinfo);
+        setContentView(R.layout.activity_info);
         Intent intent = getIntent();
         user_index = intent.getStringExtra("user_index");
 
