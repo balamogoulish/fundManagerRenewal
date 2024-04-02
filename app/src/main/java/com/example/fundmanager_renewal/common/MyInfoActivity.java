@@ -1,6 +1,5 @@
-package com.example.fundmanager_renewal;
+package com.example.fundmanager_renewal.common;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +9,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.fundmanager_renewal.R;
+import com.example.fundmanager_renewal.retrofit.retrofit_client;
+import com.example.fundmanager_renewal.model.user_model;
 
 import retrofit2.Call;
 import retrofit2.Callback;

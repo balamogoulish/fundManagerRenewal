@@ -1,9 +1,11 @@
-package com.example.fundmanager_renewal;
+package com.example.fundmanager_renewal.retrofit;
 
 import java.util.List;
 
+import com.example.fundmanager_renewal.model.gain_model;
+import com.example.fundmanager_renewal.model.transaction_model;
+import com.example.fundmanager_renewal.model.user_model;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;

@@ -1,4 +1,4 @@
-package com.example.fundmanager_renewal;
+package com.example.fundmanager_renewal.common;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +7,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.fundmanager_renewal.R;
+import com.example.fundmanager_renewal.retrofit.retrofit_client;
+import com.example.fundmanager_renewal.model.user_model;
 
 import org.mindrot.jbcrypt.BCrypt;
 

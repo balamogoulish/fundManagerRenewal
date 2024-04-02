@@ -1,14 +1,19 @@
-package com.example.fundmanager_renewal;
+package com.example.fundmanager_renewal.common;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.fundmanager_renewal.R;
+import com.example.fundmanager_renewal.retrofit.retrofit_client;
+import com.example.fundmanager_renewal.model.user_model;
+
+import org.mindrot.jbcrypt.BCrypt;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -73,9 +78,8 @@ public class FindPwActivity extends AppCompatActivity {
             }
         });
     }
-
     public void updateNewPw(String pw, String id){
-        call = retrofit_client.getApiService().updatePw(id, pw);
+        call = retrofit_client.getApiService().updatePw(id, BCrypt.hashpw(pw, BCrypt.gensalt()));
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

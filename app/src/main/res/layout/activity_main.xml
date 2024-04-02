@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0CFDD835"
-    tools:context=".MainActivity">
+    tools:context=".common.MainActivity">
 
     <ImageView
         android:id="@+id/naver_login_btn"

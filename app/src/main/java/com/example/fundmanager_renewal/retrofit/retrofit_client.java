@@ -1,4 +1,4 @@
-package com.example.fundmanager_renewal;
+package com.example.fundmanager_renewal.retrofit;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

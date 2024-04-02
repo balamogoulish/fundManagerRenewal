@@ -1,17 +1,20 @@
-package com.example.fundmanager_renewal;
+package com.example.fundmanager_renewal.common;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.fundmanager_renewal.R;
+import com.example.fundmanager_renewal.model.gain_model;
+import com.example.fundmanager_renewal.retrofit.retrofit_client;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

@@ -1,4 +1,4 @@
-package com.example.fundmanager_renewal;
+package com.example.fundmanager_renewal.common;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,11 +10,18 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.fundmanager_renewal.R;
+import com.example.fundmanager_renewal.callbacks.TotalAmountCallback;
+import com.example.fundmanager_renewal.callbacks.bringGainPrincipalCallback;
+import com.example.fundmanager_renewal.model.gain_model;
+import com.example.fundmanager_renewal.retrofit.retrofit_client;
+import com.example.fundmanager_renewal.model.transaction_model;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MenuActivity extends AppCompatActivity implements TotalAmountCallback, bringGainPrincipalCallback{
+public class MenuActivity extends AppCompatActivity implements TotalAmountCallback, bringGainPrincipalCallback {
     String user_index, username;
     TextView name, user_money, user_gain;
     Call<gain_model> callGain;
@@ -117,6 +124,7 @@ public class MenuActivity extends AppCompatActivity implements TotalAmountCallba
     }
     public void logout(View target){
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }

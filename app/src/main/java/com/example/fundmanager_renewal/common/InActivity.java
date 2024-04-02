@@ -1,4 +1,4 @@
-package com.example.fundmanager_renewal;
+package com.example.fundmanager_renewal.common;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,11 +11,18 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.fundmanager_renewal.R;
+import com.example.fundmanager_renewal.callbacks.TotalAmountCallback;
+import com.example.fundmanager_renewal.callbacks.bringGainPrincipalCallback;
+import com.example.fundmanager_renewal.model.gain_model;
+import com.example.fundmanager_renewal.retrofit.retrofit_client;
+import com.example.fundmanager_renewal.model.transaction_model;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class InActivity extends AppCompatActivity implements TotalAmountCallback, bringGainPrincipalCallback{
+public class InActivity extends AppCompatActivity implements TotalAmountCallback, bringGainPrincipalCallback {
     TextView txt_total_amount;
     EditText edit_input;
     String user_index;

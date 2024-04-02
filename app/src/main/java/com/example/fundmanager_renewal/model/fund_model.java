@@ -1,4 +1,4 @@
-package com.example.fundmanager_renewal;
+package com.example.fundmanager_renewal.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
