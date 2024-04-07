@@ -3,6 +3,7 @@ package com.example.fundmanager_renewal.retrofit;
 import java.util.List;
 
 import com.example.fundmanager_renewal.model.gain_model;
+import com.example.fundmanager_renewal.model.sns_model;
 import com.example.fundmanager_renewal.model.transaction_model;
 import com.example.fundmanager_renewal.model.user_model;
 import retrofit2.Call;
@@ -13,6 +14,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface RetrofitInterface {
     @FormUrlEncoded
@@ -76,4 +78,11 @@ public interface RetrofitInterface {
     @FormUrlEncoded
     @POST("user/newPw")
     Call<String> sendNewPw(@Field("email") String email);
+
+    @GET("sns")
+    Call<sns_model> getSnsId(@Query("sns_id") long sns_id, @Query("sns_type") String sns_type);
+
+    @FormUrlEncoded
+    @POST("sns")
+    Call<Void> linkSns(@Field("id") String id, @Field("sns_id") long sns_id, @Field("sns_type") String sns_type);
 }

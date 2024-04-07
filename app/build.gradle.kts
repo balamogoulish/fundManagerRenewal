@@ -35,6 +35,9 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation ("org.mindrot:jbcrypt:0.4")
+    implementation ("com.kakao.sdk:v2-user:2.4.2")
+    //네이버 로그인
+//    implementation("com.naver.nid:naveridlogin-android-sdk:4.2.6")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
