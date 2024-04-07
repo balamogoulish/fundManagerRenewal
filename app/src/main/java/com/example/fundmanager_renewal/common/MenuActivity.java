@@ -48,7 +48,6 @@ public class MenuActivity extends AppCompatActivity implements TotalAmountCallba
         super.onResume();
         bringGain(this);
         bringTotalAmount(this);
-
     }
 
     public void bringGain(bringGainPrincipalCallback callback){

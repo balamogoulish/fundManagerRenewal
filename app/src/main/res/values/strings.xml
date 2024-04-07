@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">FundManager_renewal</string>
     <string name="kakaoApi">84565de73f708f3e0f193397c8ce6158</string>
+    <string name="naver_client_id">RtuLe7JvwdG4vMfh0s2x</string>
+    <string name="naver_client_secret">miQd1u3BaX</string>
+    <string name="naver_client_name">Fund Manager</string>
 </resources>

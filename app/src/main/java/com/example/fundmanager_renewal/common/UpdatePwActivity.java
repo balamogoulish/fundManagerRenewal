@@ -74,8 +74,7 @@ public class UpdatePwActivity  extends AppCompatActivity {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if(response.isSuccessful()){
                     Toast.makeText(getApplicationContext(), "정상적으로 변경되었습니다.", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(), MyInfoActivity.class);
-                    startActivity(intent);
+                    finish();
                 }
             }
 

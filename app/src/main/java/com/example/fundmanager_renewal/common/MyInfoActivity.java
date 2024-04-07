@@ -14,19 +14,24 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.fundmanager_renewal.R;
 import com.example.fundmanager_renewal.callbacks.KakaoCallback;
+import com.example.fundmanager_renewal.callbacks.NaverCallback;
 import com.example.fundmanager_renewal.retrofit.retrofit_client;
 import com.example.fundmanager_renewal.model.user_model;
 import com.example.fundmanager_renewal.sns.KakaoUtils;
+import com.example.fundmanager_renewal.sns.NaverUtils;
+import com.navercorp.nid.NaverIdLoginSDK;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MyInfoActivity extends AppCompatActivity implements KakaoCallback {
+public class MyInfoActivity extends AppCompatActivity implements KakaoCallback, NaverCallback {
     TextView name, email, account;
     String user_index;
     private String id;
     Call<user_model> call;
+
+    NaverIdLoginSDK naverLoginModule;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,16 +43,29 @@ public class MyInfoActivity extends AppCompatActivity implements KakaoCallback {
         email = findViewById(R.id.email_txt);
         account = findViewById(R.id.account_txt);
 
+        naverLoginModule = NaverIdLoginSDK.INSTANCE;
+
+        naverLoginModule.initialize(this,
+                getResources().getString(R.string.naver_client_id),
+                getResources().getString(R.string.naver_client_secret),
+                getResources().getString(R.string.naver_client_name));
+
         bringMyInfo();
     }
 
     public void goToKakao(View target){
         KakaoUtils.linkKakao(this, this);
     }
-    public void linkNaver(){
-
+    @Override
+    public void kakaoLoginReceived(long sns_id, String nickname) {
+        newSNSId(sns_id+"", "KAKAO");
     }
-    public void newSNSId(long sns_id, String sns_type){
+    public void goToNaver(View target){ NaverUtils.linkNaver(this, this);}
+    @Override
+    public void naverLoginReceived(String sns_id, String nickname){
+        newSNSId(sns_id+"", "NAVER");
+    }
+    public void newSNSId(String sns_id, String sns_type){
         //user_index, sns_id, sns_type을 sns_info table에 insert
         Log.d(TAG, "invoke: id =" + sns_id);
         Log.d(TAG, "invoke: type =" + sns_type);
@@ -90,14 +108,6 @@ public class MyInfoActivity extends AppCompatActivity implements KakaoCallback {
         });
     }
 
-    public void checkDeleteReally(View target){
-        AlertDialog.Builder ad = new AlertDialog.Builder(MyInfoActivity.this);
-        ad.setMessage("탈퇴하시겠습니까?");
-        ad.setPositiveButton("확인", (dialog, which) -> deleteMyAccount());
-        ad.setNegativeButton("취소", (dialog, which) -> dialog.dismiss());
-        ad.show();
-
-    }
     public void deleteMyAccount(){
         Call<Void> call = retrofit_client.getApiService().deleteAccount(user_index);
         call.enqueue(new Callback<Void>() {
@@ -116,19 +126,24 @@ public class MyInfoActivity extends AppCompatActivity implements KakaoCallback {
             }
         });
     }
-
-    public String getUserId() {
-        return id;
-    }
-
     public void updateMyPw(View target){
         Intent intent = new Intent(getApplicationContext(), UpdatePwActivity.class);
         intent.putExtra("id", getUserId());
         startActivity(intent);
     }
+    public void checkDeleteReally(View target){
+        AlertDialog.Builder ad = new AlertDialog.Builder(MyInfoActivity.this);
+        ad.setMessage("탈퇴하시겠습니까?");
+        ad.setPositiveButton("확인", (dialog, which) -> deleteMyAccount());
+        ad.setNegativeButton("취소", (dialog, which) -> dialog.dismiss());
+        ad.show();
 
-    @Override
-    public void kakaoLoginReceived(long sns_id, String nickname) {
-        newSNSId(sns_id, "KAKAO");
     }
+    public String getUserId() {
+        return id;
+    }
+
+
+
+
 }

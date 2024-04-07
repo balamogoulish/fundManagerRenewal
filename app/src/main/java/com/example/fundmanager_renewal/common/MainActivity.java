@@ -17,13 +17,16 @@ import android.widget.Toast;
 
 import com.example.fundmanager_renewal.R;
 import com.example.fundmanager_renewal.callbacks.KakaoCallback;
+import com.example.fundmanager_renewal.callbacks.NaverCallback;
 import com.example.fundmanager_renewal.model.sns_model;
 import com.example.fundmanager_renewal.retrofit.retrofit_client;
 import com.example.fundmanager_renewal.model.user_model;
 import com.example.fundmanager_renewal.sns.KakaoUtils;
+import com.example.fundmanager_renewal.sns.NaverUtils;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
+import com.navercorp.nid.NaverIdLoginSDK;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -37,16 +40,24 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements KakaoCallback{
+public class MainActivity extends AppCompatActivity implements KakaoCallback, NaverCallback {
     EditText edit_id, edit_pw;
     Call<user_model> call;
     Call<sns_model> snsCall;
+    NaverIdLoginSDK naverLoginModule;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         edit_id = findViewById(R.id.id_edit);
         edit_pw = findViewById(R.id.pw_edit);
+
+        naverLoginModule = NaverIdLoginSDK.INSTANCE;
+
+        naverLoginModule.initialize(this,
+                getResources().getString(R.string.naver_client_id),
+                getResources().getString(R.string.naver_client_secret),
+                getResources().getString(R.string.naver_client_name));
     }
 
     public void login(View target){
@@ -90,7 +101,11 @@ public class MainActivity extends AppCompatActivity implements KakaoCallback{
         KakaoUtils.linkKakao(this, this);
     }
 
-    public void loginSns(long sns_id, String sns_type, String nickName){
+    public void loginNaver(View target){
+        NaverUtils.linkNaver(this, this);
+    }
+
+    public void loginSns(String sns_id, String sns_type, String nickName){
         //sns_id와 sns_type가 일치하는 user_index로 로그인함
         snsCall = retrofit_client.getApiService().getSnsId(sns_id, sns_type);
         snsCall.enqueue(new Callback<sns_model>() {
@@ -112,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements KakaoCallback{
             @Override
             public void onFailure(Call<sns_model> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "일치하는 계정을 찾을 수 없습니다.\n<내 정보>에서 sns와 계정을 연동해주세요.", Toast.LENGTH_SHORT).show();
+                Log.d("loginSNSFailure", t+"");
             }
         });
 
@@ -119,19 +135,20 @@ public class MainActivity extends AppCompatActivity implements KakaoCallback{
     }
     @Override
     public void kakaoLoginReceived(long sns_id, String nickName) {
-        loginSns(sns_id, "KAKAO", nickName);
+        loginSns(sns_id+"", "KAKAO", nickName);
     }
-
+    @Override
+    public void naverLoginReceived(String sns_id, String nickname) {
+        loginSns(sns_id+"", "NAVER", nickname);
+    }
     public void goToSignUp(View target){
         Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
         startActivity(intent);
     }
-
     public void goToFindId(View target){
         Intent intent = new Intent(getApplicationContext(), FindIdActivity.class);
         startActivity(intent);
     }
-
     public void goToFindPw(View target){
         Intent intent = new Intent(getApplicationContext(), FindPwActivity.class);
         startActivity(intent);

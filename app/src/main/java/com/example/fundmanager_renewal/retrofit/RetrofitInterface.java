@@ -80,9 +80,9 @@ public interface RetrofitInterface {
     Call<String> sendNewPw(@Field("email") String email);
 
     @GET("sns")
-    Call<sns_model> getSnsId(@Query("sns_id") long sns_id, @Query("sns_type") String sns_type);
+    Call<sns_model> getSnsId(@Query("sns_id") String sns_id, @Query("sns_type") String sns_type);
 
     @FormUrlEncoded
     @POST("sns")
-    Call<Void> linkSns(@Field("id") String id, @Field("sns_id") long sns_id, @Field("sns_type") String sns_type);
+    Call<Void> linkSns(@Field("id") String id, @Field("sns_id") String sns_id, @Field("sns_type") String sns_type);
 }
