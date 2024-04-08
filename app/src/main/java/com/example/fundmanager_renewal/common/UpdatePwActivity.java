@@ -10,8 +10,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.fundmanager_renewal.R;
+import com.example.fundmanager_renewal.callbacks.getUserCallback;
 import com.example.fundmanager_renewal.retrofit.retrofit_client;
 import com.example.fundmanager_renewal.model.user_model;
+import com.example.fundmanager_renewal.utils.sns.UserUtils;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -22,11 +24,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class UpdatePwActivity  extends AppCompatActivity {
+public class UpdatePwActivity  extends AppCompatActivity implements getUserCallback {
 
     EditText edit_originPw, edit_newPw;
-    String id;
-    Call<user_model> callUser;
+    String id, originPw, newPw;
     Call<Void> call;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,8 +40,8 @@ public class UpdatePwActivity  extends AppCompatActivity {
     }
 
     public void checkOriginPw(View target){
-        String originPw = edit_originPw.getText().toString();
-        String newPw = edit_newPw.getText().toString();
+        originPw = edit_originPw.getText().toString();
+        newPw = edit_newPw.getText().toString();
 
         String pwPattern = "([0-9].*[!,@,#,^,*,(,)])|([!,@,#,^,*,(,)].*[5,])";
         Pattern pattern_pw = Pattern.compile(pwPattern);
@@ -49,26 +50,12 @@ public class UpdatePwActivity  extends AppCompatActivity {
         if(!matcher.find()){
             Toast.makeText(getApplicationContext(), "숫자, 특수문자가 포함된 5-9자를 비밀번호로 입력해주세요.", Toast.LENGTH_SHORT).show();
         } else{
-            callUser = retrofit_client.getApiService().checkIdDuplicate(id);
-            callUser.enqueue(new Callback<user_model>() {
-                @Override
-                public void onResponse(Call<user_model> call, Response<user_model> response) {
-                    if(response.isSuccessful() && response != null && BCrypt.checkpw(originPw, response.body().getPassword())){
-                        updatePw(newPw);
-                    } else{
-                        Toast.makeText(getApplicationContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                @Override
-                public void onFailure(Call<user_model> call, Throwable t) {
-                    Toast.makeText(getApplicationContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
-                }
-            });
+            UserUtils.getUser(id,"id",this);
         }
     }
 
     public void updatePw(String newPw){
-        call = retrofit_client.getApiService().updatePw(id, BCrypt.hashpw(newPw, BCrypt.gensalt()));
+        call = retrofit_client.getApiService().putUserPw(id, BCrypt.hashpw(newPw, BCrypt.gensalt()));
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -77,12 +64,25 @@ public class UpdatePwActivity  extends AppCompatActivity {
                     finish();
                 }
             }
-
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "문제가 발생했습니다, 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
                 Log.d("UpdatePwERROR", t+"");
             }
         });
+    }
+
+    @Override
+    public void getUserSuccess(user_model result) {
+        if( BCrypt.checkpw(originPw, result.getPassword())){
+            updatePw(newPw);
+        } else{
+            Toast.makeText(getApplicationContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+    @Override
+    public void getUserFail(String t) {
+        Toast.makeText(getApplicationContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+        Log.e("GetUser", t);
     }
 }

@@ -39,7 +39,7 @@ public class InOutListActivity extends AppCompatActivity {
         bringTransactionList();
     }
     public void bringTransactionList(){
-        call = retrofit_client.getApiService().bringTranList(user_index);
+        call = retrofit_client.getApiService().getTranListByIndex(user_index);
         call.enqueue(new Callback<List<transaction_model>>() {
             @Override
             public void onResponse(Call<List<transaction_model>> call, Response<List<transaction_model>> response) {

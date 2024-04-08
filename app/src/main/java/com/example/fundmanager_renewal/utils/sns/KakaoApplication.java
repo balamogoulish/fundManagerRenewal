@@ -1,4 +1,4 @@
-package com.example.fundmanager_renewal.sns;
+package com.example.fundmanager_renewal.utils.sns;
 
 import android.app.Application;
 

@@ -164,7 +164,7 @@
 
                     android:layout_margin="10dp"
                     android:backgroundTint="#FDD835"
-                    android:onClick="updateMyPw"
+                    android:onClick="goToUpdatePw"
                     android:text="비밀번호 변경하기"
                     android:textColor="#000000"
                     android:textSize="24sp"

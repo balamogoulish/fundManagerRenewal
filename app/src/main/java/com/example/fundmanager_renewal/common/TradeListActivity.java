@@ -42,7 +42,7 @@ public class TradeListActivity extends AppCompatActivity {
         bringGainList();
     }
     public void bringGainList(){
-        call = retrofit_client.getApiService().bringGainList(user_index);
+        call = retrofit_client.getApiService().getGainListByIndex(user_index);
         call.enqueue(new Callback<List<gain_model>>() {
             @Override
             public void onResponse(Call<List<gain_model>> call, Response<List<gain_model>> response) {

@@ -11,8 +11,16 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.fundmanager_renewal.R;
+import com.example.fundmanager_renewal.callbacks.putPostGainCallback;
+import com.example.fundmanager_renewal.callbacks.getUserCallback;
+import com.example.fundmanager_renewal.callbacks.sendEmailCallback;
+import com.example.fundmanager_renewal.callbacks.postTranCallback;
 import com.example.fundmanager_renewal.retrofit.retrofit_client;
 import com.example.fundmanager_renewal.model.user_model;
+import com.example.fundmanager_renewal.utils.sns.EmailUtils;
+import com.example.fundmanager_renewal.utils.sns.GainUtils;
+import com.example.fundmanager_renewal.utils.sns.TranUtils;
+import com.example.fundmanager_renewal.utils.sns.UserUtils;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -23,15 +31,16 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SignUpActivity extends AppCompatActivity{
+public class SignUpActivity extends AppCompatActivity implements getUserCallback, sendEmailCallback, putPostGainCallback, postTranCallback {
     EditText edit_name, edit_id, edit_pw, edit_checkPw, edit_email, edit_emailCheck, edit_account;
     TextView warn_name, warn_id, warn_pw, warn_pwRe, warn_email, warn_emailCheck, warn_account;
     Call<Void> call;
-    Call<String> callStr;
     Call<user_model> call_user;
     String user_index;
     private String emailVerificationCode;
-    private boolean emailValid = false;
+    private boolean emailValid = false,
+            initGainValid = false,
+            initTranValid = false;
     private boolean idValid = false;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,45 +73,29 @@ public class SignUpActivity extends AppCompatActivity{
         String valid = checkSignUpValid(name, id, pw, pwRe, email, account);
         if(valid.equals("SUCCESS")){
             String pwHashed = BCrypt.hashpw(pw, BCrypt.gensalt());
-            call = retrofit_client.getApiService().signUp(name, id, pwHashed, email, account);
-            call.enqueue(new Callback<Void>() {
+            call_user = retrofit_client.getApiService().postUser(name, id, pwHashed, email, account);
+            call_user.enqueue(new Callback<user_model>() {
                 @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
+                public void onResponse(Call<user_model> call, Response<user_model> response) {
                     if(response.isSuccessful()){
                         Toast.makeText(getApplicationContext(), "성공적으로 가입되었습니다!! :)", Toast.LENGTH_SHORT).show();
-
-                        call_user = retrofit_client.getApiService().checkIdDuplicate(id);
-                        call_user.enqueue(new Callback<user_model>() {
-                            @Override
-                            public void onResponse(Call<user_model> call, Response<user_model> response) {
-                                user_model result = response.body();
-                                user_index = result.getUserIndex()+"";
-                                if(initTransaction().equals(initGain())){
-                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                    startActivity(intent);
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<user_model> call, Throwable t) {
-                                Toast.makeText(getApplicationContext(),"유저 정보를 초기화하는데 실패했습니다..", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                    else{
-                        Log.d("notFailureBut", response+"");
-                        Toast.makeText(getApplicationContext(),"가입 실패...:(", Toast.LENGTH_SHORT).show();
+                        user_model result = response.body();
+                        user_index = result.getUserIndex()+"";
+                        initGainTran();
+                        if(initTranValid && initGainValid){
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                        }
                     }
                 }
                 @Override
-                public void onFailure(Call<Void> call, Throwable t) {
+                public void onFailure(Call<user_model> call, Throwable t) {
                     Toast.makeText(getApplicationContext(), "가입 실패...:(", Toast.LENGTH_SHORT).show();
                     Log.d("SignUPAPI ERROR", t+"");
                 }
             });
         }
     }
-
     public String checkSignUpValid(String name, String id, String pw, String pwRe, String email, String account){
         String result = "SUCCESS";
         String pwPattern = "([0-9].*[!,@,#,^,*,(,)])|([!,@,#,^,*,(,)].*[5, ])";
@@ -116,7 +109,7 @@ public class SignUpActivity extends AppCompatActivity{
             warn_id.setText("6-12자리의 아이디를 입력해주세요.");
             result = "FAIL";
 
-        } else if(!getIdValid()){
+        } else if(!idValid){
             warn_id.setText("아이디 중복 여부를 확인해주세요.");
             result = "FAIL";
         } else {
@@ -140,7 +133,7 @@ public class SignUpActivity extends AppCompatActivity{
         } else{
             warn_email.setText("");
         }
-        if(!getEmailValid()){
+        if(!emailValid){
             warn_emailCheck.setText("이메일을 인증해주세요.");
             result = "FAIL";
         } else{
@@ -157,53 +150,15 @@ public class SignUpActivity extends AppCompatActivity{
     }
     public void idDuplication(View target){
         String id = edit_id.getText().toString();
-        call_user = retrofit_client.getApiService().checkIdDuplicate(id);
-        call_user.enqueue(new Callback<user_model>() {
-            @Override
-            public void onResponse(Call<user_model> call, Response<user_model> response) {
-                Toast.makeText(getApplicationContext(), "중복된 아이디입니다.", Toast.LENGTH_SHORT).show();
-                idValid = false;
-            }
-            @Override
-            public void onFailure(Call<user_model> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "사용 가능한 아이디입니다.", Toast.LENGTH_SHORT).show();
-                idValid = true;
-            }
-        });
+        UserUtils.getUser(id, "id",this);
     }
-
     public void sendEmailVerificationCode(View target){
         String email = edit_email.getText().toString();
-        callStr = retrofit_client.getApiService().checkEmail(email);
-        callStr.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> callStr, Response<String> response) {
-                if (response.isSuccessful() && response.body() != null) { // 성공적으로 응답을 받았는지 확인
-                    emailVerificationCode = response.body(); // 이메일 인증 코드를 가져옴
-                    Log.d("EMAILPW", emailVerificationCode);
-                } else {
-                    Log.d("EMAILERROR", "Response not successful or body is null");
-                }
-            }
-            @Override
-            public void onFailure(Call<String> callStr, Throwable t) {
-                Log.d("EMAILERROR", t+"");
-            }
-        });
+        EmailUtils.sendEmailCode(email, "email", this);
     }
-    public String getEmailVerificationCode() {
-        return emailVerificationCode;
-    }
-    public boolean getEmailValid(){
-        return emailValid;
-    }
-    public boolean getIdValid(){
-        return idValid;
-    }
-
     public void emailCheck(View target){
         String emailCheck = edit_emailCheck.getText().toString();
-        if(emailCheck.equals(getEmailVerificationCode())){
+        if(emailCheck.equals(emailVerificationCode)){
             Toast.makeText(getApplicationContext(), "이메일이 인증되었습니다!", Toast.LENGTH_SHORT).show();
             emailValid = true;
         } else{
@@ -211,40 +166,43 @@ public class SignUpActivity extends AppCompatActivity{
             emailValid = false;
         }
     }
-
-    public String initTransaction(){
-        final String[] initTran = {"Fail"};
-        call = retrofit_client.getApiService().postTran(user_index, "0", "0", "0");
-        call.enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if(response.isSuccessful()){
-                    initTran[0] = "Success";
-                }
-            }
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Log.d("TranAPI ERROR", t+"");
-            }
-        });
-        return initTran[0];
+    @Override
+    public void getUserSuccess(user_model result){
+        Toast.makeText(getApplicationContext(), "중복된 아이디입니다.", Toast.LENGTH_SHORT).show();
+        idValid = false;
     }
-    public String initGain(){
-        final String[] initGain = {"Fail"};
-        call = retrofit_client.getApiService().postGain(user_index, "0", "0");
-        call.enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if(response.isSuccessful()){
-                    initGain[0] = "Success";
-                }
-            }
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Log.d("TranAPI ERROR", t+"");
-            }
-        });
-        return initGain[0];
+    @Override
+    public void getUserFail(String t){
+        Toast.makeText(getApplicationContext(), "사용 가능한 아이디입니다.", Toast.LENGTH_SHORT).show();
+        idValid = true;
     }
-
+    @Override
+    public void sendEmailSuccess(String code) {
+        Log.d("EmailVerification", code);
+        emailVerificationCode = code;
+    }
+    @Override
+    public void sendEmailFail(String t) {
+        Log.e("SendEmail", t);
+    }
+    public void initGainTran(){
+        GainUtils.PutOrPostGain("post", user_index, "0", "0", this);
+        TranUtils.postTran(user_index, "0", "0", "0", 0, "", this);
+    }
+    @Override
+    public void putPostGainSuccess() {
+        initGainValid = true;
+    }
+    @Override
+    public void putPostGainFail(String t) {
+        Log.e("GainAPI ERROR", t+"");
+    }
+    @Override
+    public void postTranSuccess(long total, String input) {
+        initTranValid =true;
+    }
+    @Override
+    public void postTranFail(String t) {
+        Log.e("TranAPI ERROR", t);
+    }
 }

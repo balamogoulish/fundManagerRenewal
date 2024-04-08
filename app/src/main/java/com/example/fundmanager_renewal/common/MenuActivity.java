@@ -12,20 +12,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.fundmanager_renewal.R;
 import com.example.fundmanager_renewal.callbacks.TotalAmountCallback;
-import com.example.fundmanager_renewal.callbacks.bringGainPrincipalCallback;
+import com.example.fundmanager_renewal.callbacks.getGainCallback;
+import com.example.fundmanager_renewal.callbacks.getTranCallback;
 import com.example.fundmanager_renewal.model.gain_model;
 import com.example.fundmanager_renewal.retrofit.retrofit_client;
 import com.example.fundmanager_renewal.model.transaction_model;
+import com.example.fundmanager_renewal.utils.sns.GainUtils;
+import com.example.fundmanager_renewal.utils.sns.TranUtils;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MenuActivity extends AppCompatActivity implements TotalAmountCallback, bringGainPrincipalCallback {
+public class MenuActivity extends AppCompatActivity implements TotalAmountCallback, getGainCallback, getTranCallback {
+
     String user_index, username;
     TextView name, user_money, user_gain;
-    Call<gain_model> callGain;
-    Call<transaction_model> callTran;
     public static Context mContext;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,61 +48,34 @@ public class MenuActivity extends AppCompatActivity implements TotalAmountCallba
     @Override
     public void onResume(){
         super.onResume();
-        bringGain(this);
-        bringTotalAmount(this);
+        GainUtils.getGain(user_index, this);
+        TranUtils.getTran(user_index, this);
     }
 
-    public void bringGain(bringGainPrincipalCallback callback){
-        callGain = retrofit_client.getApiService().bringGain(user_index);
-        callGain.enqueue(new Callback<gain_model>() {
-            @Override
-            public void onResponse(Call<gain_model> callGain, Response<gain_model> response) {
-                if(response.isSuccessful()){
-                    gain_model gain_result = response.body();
-                    if(gain_result == null){
-                        Toast.makeText(getApplicationContext(), "사용자의 gain이 비어있습니다.", Toast.LENGTH_SHORT).show();
-                    } else{
-                        callback.gainPrincipalReceived(gain_result);
-                    }
-                }
-            }
-            @Override
-            public void onFailure(Call<gain_model> callGain, Throwable t) {
-                Toast.makeText(getApplicationContext(), "api 응답 실패!!", Toast.LENGTH_SHORT).show();
-                Log.d("<<API ERROR in Gain>>", t+"");
-            }
-        });
-
-    }
-    public void bringTotalAmount(TotalAmountCallback callback){
-        callTran = retrofit_client.getApiService().bringTran(user_index);
-        callTran.enqueue(new Callback<transaction_model>() {
-            @Override
-            public void onResponse(Call<transaction_model> callTran, Response<transaction_model> response) {
-                if(response.isSuccessful()){
-                    transaction_model tran_result = response.body();
-                    if(tran_result == null){
-                        Toast.makeText(getApplicationContext(), "사용자의 거래 내역이 비어있습니다.", Toast.LENGTH_SHORT).show();
-                    } else{
-                        callback.onTotalAmountReceived(tran_result);
-                    }
-                }
-            }
-            @Override
-            public void onFailure(Call<transaction_model> callTran, Throwable t) {
-                Toast.makeText(getApplicationContext(), "api 응답 실패!!", Toast.LENGTH_SHORT).show();
-                Log.d("<<API ERROR in Tran>>", t+"");
-            }
-        });
-    }
     @Override
     public void onTotalAmountReceived(transaction_model tran_result) {
         user_money.setText(tran_result.getTotal_amount()+"");
     }
+
     @Override
-    public void gainPrincipalReceived(gain_model gain_result) {
-        user_gain.setText(gain_result.getGain()+"");
+    public void getGainSuccess(gain_model result) {
+        user_gain.setText(result.getGain()+"");
     }
+    @Override
+    public void getGainFail(String t) {
+        Log.e("GAIN", t);
+        Toast.makeText(getApplicationContext(), "사용자의 정보를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public void getTranSuccess(transaction_model result) {
+        user_money.setText(result.getTotal_amount()+"");
+    }
+    @Override
+    public void getTranFail(String t) {
+        Log.e("TRANSACTION", t);
+        Toast.makeText(getApplicationContext(), "사용자의 정보를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
+    }
+
     public void goToIn(View target){
         Intent intent = new Intent(getApplicationContext(), InActivity.class);
         intent.putExtra("user_index", user_index);
@@ -132,6 +107,4 @@ public class MenuActivity extends AppCompatActivity implements TotalAmountCallba
         intent.putExtra("user_index", user_index);
         startActivity(intent);
     }
-
-
 }
