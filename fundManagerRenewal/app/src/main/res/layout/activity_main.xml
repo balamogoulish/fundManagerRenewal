@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0CFDD835"
+    tools:context=".common.MainActivity">
+
+    <ImageView
+        android:id="@+id/naver_login_btn"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="100dp"
+        android:onClick="loginNaver"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sns_txt2"
+        app:srcCompat="@drawable/naver_icon" />
+
+    <ImageView
+        android:id="@+id/kakao_login_btn"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:onClick="loginKakao"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sns_txt2"
+        app:srcCompat="@drawable/kakao_icon" />
+
+    <TextView
+        android:id="@+id/sns_txt2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SNS LOGIN"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="20dp"
+        android:background="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signup_btn" />
+
+    <EditText
+        android:id="@+id/id_edit"
+        style="@style/Widget.Material3.TextInputEditText.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="40dp"
+        android:background="@drawable/border"
+        android:drawableTint="#FFFFFF"
+        android:ems="10"
+        android:foregroundTint="#FFFFFF"
+        android:hint="아이디"
+        android:inputType="text"
+        android:textColor="#706533"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+    <EditText
+        android:id="@+id/pw_edit"
+        style="@style/Widget.Material3.TextInputEditText.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/border"
+        android:ems="10"
+        android:hint="비밀번호"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="@+id/id_edit"
+        app:layout_constraintStart_toStartOf="@+id/id_edit"
+        app:layout_constraintTop_toBottomOf="@+id/id_edit" />
+
+    <Button
+        android:id="@+id/login_btn"
+        style="@style/Widget.Material3.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="70dp"
+        android:backgroundTint="#FDD835"
+        android:onClick="login"
+        android:text="로그인"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/pw_edit"
+        app:layout_constraintStart_toStartOf="@+id/pw_edit"
+        app:layout_constraintTop_toBottomOf="@+id/pw_edit" />
+
+    <Button
+        android:id="@+id/signup_btn"
+        style="@style/Widget.Material3.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#FDD835"
+        android:onClick="goToSignUp"
+        android:text="회원가입"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/login_btn"
+        app:layout_constraintStart_toStartOf="@+id/login_btn"
+        app:layout_constraintTop_toBottomOf="@+id/login_btn" />
+
+    <Button
+        android:id="@+id/findid_btn"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:onClick="goToFindId"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:text="아이디 찾기"
+        android:textColor="#816900"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="/"
+        android:textColor="#816900"
+        app:layout_constraintBottom_toBottomOf="@+id/findpw_btn"
+        app:layout_constraintEnd_toEndOf="@+id/signup_btn"
+        app:layout_constraintStart_toStartOf="@+id/signup_btn"
+        app:layout_constraintTop_toTopOf="@+id/findpw_btn" />
+
+    <Button
+        android:id="@+id/findpw_btn"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="goToFindPw"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:text="비밀번호 재발급"
+        android:textColor="#816900"
+        app:layout_constraintBottom_toBottomOf="@+id/findid_btn"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="@+id/findid_btn" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:fontFamily="sans-serif"
+        android:text="LOGIN"
+        android:textAlignment="textStart"
+        android:textColor="#000000"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
