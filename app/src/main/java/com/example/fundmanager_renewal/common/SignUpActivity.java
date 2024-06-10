@@ -34,13 +34,12 @@ import retrofit2.Response;
 public class SignUpActivity extends AppCompatActivity implements getUserCallback, sendEmailCallback, putPostGainCallback, postTranCallback {
     EditText edit_name, edit_id, edit_pw, edit_checkPw, edit_email, edit_emailCheck, edit_account;
     TextView warn_name, warn_id, warn_pw, warn_pwRe, warn_email, warn_emailCheck, warn_account;
-    Call<Void> call;
     Call<user_model> call_user;
     String user_index;
     private String emailVerificationCode;
-    private boolean emailValid = false,
-            initGainValid = false,
-            initTranValid = false;
+    private boolean emailValid = false;
+    private boolean initGainValid = false;
+    private boolean initTranValid = false;
     private boolean idValid = false;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,10 +81,6 @@ public class SignUpActivity extends AppCompatActivity implements getUserCallback
                         user_model result = response.body();
                         user_index = result.getUserIndex()+"";
                         initGainTran();
-                        if(initTranValid && initGainValid){
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(intent);
-                        }
                     }
                 }
                 @Override
@@ -155,6 +150,7 @@ public class SignUpActivity extends AppCompatActivity implements getUserCallback
     public void sendEmailVerificationCode(View target){
         String email = edit_email.getText().toString();
         EmailUtils.sendEmailCode(email, "email", this);
+        Toast.makeText(getApplicationContext(), "해당 이메일로 인증코드를 발급했습니다.", Toast.LENGTH_SHORT).show();
     }
     public void emailCheck(View target){
         String emailCheck = edit_emailCheck.getText().toString();
@@ -187,11 +183,11 @@ public class SignUpActivity extends AppCompatActivity implements getUserCallback
     }
     public void initGainTran(){
         GainUtils.PutOrPostGain("post", user_index, "0", "0", this);
-        TranUtils.postTran(user_index, "0", "0", "0", 0, "", this);
+
     }
     @Override
     public void putPostGainSuccess() {
-        initGainValid = true;
+        TranUtils.postTran(user_index, "0", "0", "0", 0, "", this);
     }
     @Override
     public void putPostGainFail(String t) {
@@ -199,7 +195,8 @@ public class SignUpActivity extends AppCompatActivity implements getUserCallback
     }
     @Override
     public void postTranSuccess(long total, String input) {
-        initTranValid =true;
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
     }
     @Override
     public void postTranFail(String t) {

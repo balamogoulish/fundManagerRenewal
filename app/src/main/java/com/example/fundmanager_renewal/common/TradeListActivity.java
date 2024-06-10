@@ -29,12 +29,10 @@ import retrofit2.Response;
 public class TradeListActivity extends AppCompatActivity {
     String user_index;
     Call<List<gain_model>> call;
-    public static Context tContext;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trade_list);
-        tContext = this;
 
         Intent intent = getIntent();
         user_index = intent.getStringExtra("user_index");

@@ -12,35 +12,19 @@ public class gain_model {
     private long user_index_g;
     @SerializedName("gain")
     @Expose
-    private long gain;
+    private double gain;
     @SerializedName("principal")
     @Expose
     private long principal;
     @SerializedName("gain_time")
     @Expose
     private String gain_time;
-
-    public long getGain_index() {
-        return gain_index;
+    public double getGain() {
+        double gainRound = Math.round(gain*1000)/1000.0;
+        return gainRound;
     }
 
-    public void setGain_index(long gain_index) {
-        this.gain_index = gain_index;
-    }
-
-    public long getUser_index_g() {
-        return user_index_g;
-    }
-
-    public void setUser_index_g(long user_index_g) {
-        this.user_index_g = user_index_g;
-    }
-
-    public long getGain() {
-        return gain;
-    }
-
-    public void setGain(long gain) {
+    public void setGain(double gain) {
         this.gain = gain;
     }
 

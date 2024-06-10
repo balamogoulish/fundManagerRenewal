@@ -30,7 +30,8 @@ public class OutActivity extends AppCompatActivity implements  getGainCallback, 
     TextView txt_total_amount;
     EditText edit_output;
     String user_index, output;
-    long total_amount, principal, gain, total;
+    long total_amount, principal, total;
+    double gain;
     Call<Void> call;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
